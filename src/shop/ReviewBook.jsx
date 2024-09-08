@@ -1,9 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const ReviewBook = () => {
-  const { id } = useParams();  // Get the book ID from the URL
+  const { id } = useParams();
   const [book, setBook] = useState(null);
+  const navigate = useNavigate(); // To programmatically navigate if needed
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    fetch(`https://bookstore-project-ues5.onrender.com/api/books/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        // Ensure that the author and genre fields are arrays
+        if (typeof data.author === 'string') {
+          data.author = data.author.split(',').map(author => author.trim());
+        }
+        if (typeof data.genre === 'string') {
+          data.genre = data.genre.split(',').map(genre => genre.trim());
+        }
+        setBook(data);
+      })
+      .catch(err => console.error(err));
+  }, [id]);
 
   const handleAddToCart = () => {
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -11,60 +30,18 @@ const ReviewBook = () => {
     localStorage.setItem('cart', JSON.stringify(newCart));
     alert('Book added to cart');
   };
-  
-
-  useEffect(() => {
-    // Fetch book details based on the ID
-    fetch(`https://bookstore-project-essg.onrender.com/api/books/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        console.log('Book data:', data); // Debugging log
-
-        // Ensure that the author field is an array
-        if (typeof data.author === 'string') {
-          data.author = data.author.split(',').map(author => author.trim());
-        }
-
-        setBook(data);
-      })
-      .catch(err => console.error(err));
-  }, [id]);
 
   if (!book) return <p className="text-center text-xl">Loading...</p>;
 
-  // Helper function to render links
-  const renderLinks = (items, baseLink) => {
-    if (Array.isArray(items)) {
-      return items.map((item, index) => (
-        <React.Fragment key={index}>
-          <Link to={`${baseLink}${encodeURIComponent(item)}`} className='text-blue-500 hover:underline'>
-            {item}
-          </Link>
-          {index < items.length - 1 && ', '}
-        </React.Fragment>
-      ));
-    }
-    return (
-      <Link to={`${baseLink}${encodeURIComponent(items)}`} className='text-blue-500 hover:underline'>
-        {items}
-      </Link>
-    );
-  };
-
   return (
     <div className='bg-teal-100 min-h-screen pt-28 px-4 lg:px-24 flex justify-between'>
-      {/* Left division with image */}
       {/* Left division with image */}
       <div className='lg:w-1/4 h-[400px] flex-shrink-0 sticky top-28 rounded-lg p-4 overflow-hidden'>
         <img src={book.image_url} alt={book.title} className='h-48 w-full object-contain rounded' />
         <button onClick={handleAddToCart} className='mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700'>
           Add to Cart
         </button>
-        {/*<button className='mt-4 w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700'>
-          Voucher
-        </button>*/}
       </div>
-
 
       {/* Right division with text */}
       <div
@@ -90,14 +67,38 @@ const ReviewBook = () => {
           <div className='mt-4 text-xl'>
             <p className='font-semibold text-gray-600'>Author:</p>
             <div>
-              {renderLinks(book.author, '/shop?author=')}
+              {book.author.map((author, index) => (
+                <React.Fragment key={index}>
+                  <Link
+                    to="/shop"
+                    state={{ searchTerm: author }}  // Pass the author to shop via state
+                    className='text-blue-500 hover:underline'
+                  >
+                    {author}
+                  </Link>
+
+                  {index < book.author.length - 1 && ', '}
+                </React.Fragment>
+              ))}
             </div>
           </div>
 
           <div className='mt-4 text-xl'>
             <p className='font-semibold text-gray-600'>Genre:</p>
             <div>
-              {renderLinks(book.genre, '/shop?genre=')}
+              {book.genre.map((genre, index) => (
+                <React.Fragment key={index}>
+                  <Link
+                    to="/shop"
+                    state={{ filter: genre }}  // Pass the genre to shop via state
+                    className='text-blue-500 hover:underline'
+                  >
+                    {genre}
+                  </Link>
+
+                  {index < book.genre.length - 1 && ', '}
+                </React.Fragment>
+              ))}
             </div>
           </div>
 

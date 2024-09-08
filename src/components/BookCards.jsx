@@ -15,35 +15,22 @@ const cardStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  height: '380px', // Adjust height as needed
-  width: '180px',  // Adjust width as needed
+  height: '400px', // Increased height to fit image and text
+  width: '200px',  // Adjusted width for better layout
   borderRadius: '8px',
   overflow: 'hidden',
   position: 'relative',
   backgroundColor: '#e6e4e4',
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  border: '1px solid #ddd', // Border added here
+  border: '1px solid #ddd',
 };
 
 const imageStyle = {
   width: '100%',
-  height: '300px', // Adjust height as needed
+  height: '300px',  // Adjusted to an average book cover height
   objectFit: 'cover',
 };
 
-const overlayStyle = {
-  position: 'absolute',
-  top: '10px',
-  right: '10px',
-  backgroundColor: 'rgba(0, 0, 255, 0.6)', // Default background color
-  padding: '8px',
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer', // Ensure the cursor shows as pointer to indicate it's clickable
-  transition: 'background-color 0.3s ease', // Smooth transition
-};
 
 const infoStyle = {
   padding: '10px',
@@ -68,6 +55,24 @@ const priceStyle = {
   margin: '5px 0 0',
 };
 
+const overlayStyle = {
+  position: 'absolute',
+  top: '10px',
+  right: '10px',
+  backgroundColor: 'rgba(0, 0, 255, 0.6)',  // Keep this consistent
+  padding: '8px',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+};
+
+const iconStyle = {
+  color: 'white',  // Default color
+  transition: 'color 0.3s ease',  // Smooth transition for color change
+};
+
 const BookCards = ({ headline, books }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
@@ -75,7 +80,6 @@ const BookCards = ({ headline, books }) => {
     <div className='my-16 px-4 lg:px-24'>
       <h2 className='text-5xl text-center font-bold text-black my-5'>{headline}</h2>
 
-      {/* cards */}
       <div className='mt-12'>
         <Swiper
           slidesPerView={1}
@@ -104,16 +108,16 @@ const BookCards = ({ headline, books }) => {
                 <div style={cardStyle}>
                   <img src={book.image_url} alt={book.title} style={imageStyle} />
                   <div
-                    style={{
-                      ...overlayStyle,
-                      backgroundColor: hoveredIndex === index ? 'rgba(0, 0, 255, 0.6)' : 'rgba(0, 0, 255, 0.6)', // Base background color
-                    }}
+                    style={overlayStyle}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
                     <FaCartShopping
                       className='w-6 h-6'
-                      style={{ color: hoveredIndex === index ? 'orange' : 'white', transition: 'color 0.3s ease' }} // Change icon color on hover
+                      style={{
+                        ...iconStyle,
+                        color: hoveredIndex === index ? 'orange' : 'white',  // Only icon changes color on hover
+                      }}
                     />
                   </div>
                   <div style={infoStyle}>
@@ -129,6 +133,5 @@ const BookCards = ({ headline, books }) => {
       </div>
     </div>
   );
-}
-
+};
 export default BookCards;

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Textarea } from "flowbite-react";
 import { Button, Label, Select, TextInput } from "flowbite-react";
+import { UserContext } from '../contects/UserContext';
 
 const UploadBook = () => {
+  const { user } = useContext(UserContext);
+  console.log(user?.username);
   const bookCategories = [
     "Fiction",
     "Non-Fiction",
@@ -42,6 +45,7 @@ const UploadBook = () => {
     const price = form.price.value;
     const image_url = form.image_url.value;
     const description = form.description.value;
+    const username = user?.username;
 
     const bookObj = {
       isbn,
@@ -50,11 +54,12 @@ const UploadBook = () => {
       genre,
       price,
       image_url,
-      description
+      description,
+      username
     };
     console.log(bookObj);
 
-    fetch("https://bookstore-project-essg.onrender.com/api/books", {
+    fetch("https://bookstore-project-ues5.onrender.com/api/books", {
       method: "POST",
       headers: {
         "Content-type": "application/json"

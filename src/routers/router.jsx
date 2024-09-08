@@ -19,70 +19,81 @@ import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Logout from "../components/Logout";
 import Cart from "../components/Cart";
 import PremiumSubscription from "../components/PremiumSubscription";
+import ProfileSettings from "../components/ProfileSetting";
+import { UserProvider } from '../contects/UserContext';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>,
+    element: (
+      <UserProvider> {/* Wrap the entire app with UserProvider */}
+        <App />
+      </UserProvider>
+    ),
     children: [
       {
         path: '/',
-        element: <Home/>
+        element: <Home />
       },
       {
         path: '/shop',
-        element: <Shop/>
+        element: <Shop />
       },
       {
         path: '/about',
-        element: <About/>
+        element: <About />
       },
       {
         path: '/cart',
-        element: <Cart/>
+        element: <Cart />
       },
       {
         path: '/reviewbook/:id',
-        element: <ReviewBook/>,
-        loader: ({params}) => fetch(`https://bookstore-project-essg.onrender.com/api/books/${params.id}`)
+        element: <ReviewBook />,
+        loader: ({ params }) => fetch(`https://bookstore-project-ues5.onrender.com/api/books/${params.id}`)
       }
     ]
   },
   {
     path: "/admin/dashboard",
-    element: <Dashboardlayout/>,
+    element: <Dashboardlayout />,
     children: [
       {
         path: "/admin/dashboard",
-        element: <PrivateRoute><Dashboard/></PrivateRoute>
+        element: <Dashboard />
       },
       {
         path: "/admin/dashboard/upload",
-        element: <UploadBook/>
+        element: <UploadBook />
       },
       {
         path: "/admin/dashboard/manage",
-        element: <ManageBooks/>
+        element: <ManageBooks />
       },
       {
         path: "/admin/dashboard/edit-allBooks/:id",
-        element: <EditBooks/>,
-        loader: ({params}) => fetch(`https://bookstore-project-essg.onrender.com/api/books/${params.id}`)
+        element: <EditBooks />,
+        loader: ({ params }) => fetch(`https://bookstore-project-ues5.onrender.com/api/books/${params.id}`)
       }
+
     ]
   }, {
-    path: "sign-up",
-    element: <Signup/>
-  },{
-    path: "login",
-    element:<Login/>
-  },{
-    path: "logout",
-    element: <Logout/>
+    path: "/sign-up",
+    element: <Signup />
+  }, {
+    path: "/login",
+    element: <Login />
+  }, {
+    path: "/logout",
+    element: <Logout />
   },
   {
-    path: "premium-subscription",
-    element: <PremiumSubscription/>
+    path: "/profile/settings",
+    element: <ProfileSettings />
+  },
+  {
+    path: "/premium-subscription",
+    element: <PremiumSubscription />
   }
 ]);
 
